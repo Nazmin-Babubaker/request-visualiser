@@ -1,0 +1,18 @@
+### Test root
+GET http://localhost:5000/
+
+### Test POST JSON
+POST http://localhost:5000/test
+Content-Type: application/json
+
+{
+  "url": "google.com"
+}
+###
+
+POST http://localhost:5000/test
+Content-Type: application/json
+
+{
+  "url": "google"
+}
