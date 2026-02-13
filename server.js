@@ -16,6 +16,29 @@ function isValidHostname(hostname) {
 }
 
 
+function detectServerType(headers) {
+  const server = headers["server"]?.toLowerCase() || "";
+
+  if (headers["cf-ray"]) {
+    return { type: "Edge Server (Cloudflare)", provider: "Cloudflare" };
+  }
+
+  if (headers["x-amz-cf-id"]) {
+    return { type: "Edge Server (CloudFront)", provider: "AWS CloudFront" };
+  }
+
+  if (headers["x-served-by"]) {
+    return { type: "Edge Server (Fastly)", provider: "Fastly" };
+  }
+
+  if (headers["via"] || headers["x-cache"]) {
+    return { type: "Edge Server (CDN/Proxy)", provider: "Unknown CDN" };
+  }
+
+  return { type: "Origin Server", provider: server || "Unknown" };
+}
+
+
 
 function measureTimings(url) {
   return new Promise((resolve, reject) => {
@@ -27,10 +50,17 @@ function measureTimings(url) {
     const req = lib.get(url, (res) => {
       timings.firstByte = performance.now() - start;
 
+       const headers = res.headers;
+      const statusCode = res.statusCode;
+
       res.on("data", () => {});
       res.on("end", () => {
         timings.total = performance.now() - start;
-        resolve(timings);
+        resolve({
+          timings,
+          headers,
+          statusCode
+        });
       });
     });
 
@@ -171,8 +201,13 @@ app.post("/test", async (req, res) => {
 
   
 
-    const timings = await measureTimings(parsed.href);
-    const hops = buildHops(timings);
+   const result = await measureTimings(parsed.href);
+   const timings = result.timings;
+   const headers = result.headers;
+
+   const serverInfo = detectServerType(headers);
+    
+   const hops = buildHops(timings);
 
 
    
@@ -204,6 +239,11 @@ app.post("/test", async (req, res) => {
           totalMs: Number(timings.total?.toFixed(2) || 0),
         },
         hops,
+        server: {
+         type: serverInfo.type,
+         provider: serverInfo.provider,
+         rawServerHeader: headers["server"] || null
+        },
 
       
     });
