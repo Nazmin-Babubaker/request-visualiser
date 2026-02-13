@@ -65,34 +65,48 @@ function buildHops(timings) {
   const tls = timings.tls || tcp;
   const total = timings.total || tls;
 
-  hops.push({
-    id: 1,
-    label: "DNS Resolver",
-    latency: Number(dns.toFixed(2)),
-    description: "Translated domain name into IP address."
-  });
-
-  hops.push({
-    id: 2,
-    label: "ISP Gateway",
-    latency: Number((tcp - dns).toFixed(2)),
-    description: "Established TCP connection through your ISP."
-  });
-
-  if (tls > tcp) {
-    hops.push({
-      id: 3,
+ const phases = [
+    {
+      label: "DNS Resolver",
+      latency: dns,
+      description: "Translated domain name into IP address."
+    },
+    {
+      label: "ISP Gateway",
+      latency: tcp - dns,
+      description: "Established TCP connection."
+    },
+    {
       label: "TLS Handshake",
-      latency: Number((tls - tcp).toFixed(2)),
+      latency: tls - tcp,
       description: "Secure encrypted tunnel established."
-    });
-  }
+    },
+    {
+      label: "Server Response",
+      latency: total - tls,
+      description: "Server processed request and responded."
+    }
+  ];
 
-  hops.push({
-    id: 4,
-    label: "Server Response",
-    latency: Number((total - tls).toFixed(2)),
-    description: "Server processed request and responded."
+  let cumulativeDistance = 0;
+
+  phases.forEach((phase, index) => {
+    const latency = Number(phase.latency.toFixed(2));
+    const distance = latency * 4; // scale factor
+
+    cumulativeDistance += distance;
+
+    hops.push({
+      id: index + 1,
+      label: phase.label,
+      latency,
+      description: phase.description,
+      visual: {
+        distanceFromCenter: cumulativeDistance,
+        glowIntensity: Math.min(latency / 100, 1),
+        animationDelay: cumulativeDistance / 50
+      }
+    });
   });
 
   return hops;
@@ -189,13 +203,7 @@ app.post("/test", async (req, res) => {
           firstByteMs: Number(timings.firstByte?.toFixed(2) || 0),
           totalMs: Number(timings.total?.toFixed(2) || 0),
         },
-        "hops": [
-      { "id": 1, "label": "DNS Resolver", "latency": 12 },
-      { "id": 2, "label": "ISP Gateway", "latency": 18 },
-      { "id": 3, "label": "TLS Handshake", "latency": 40 },
-      { "id": 4, "label": "Server Response", "latency": 90 }
-    ]
-
+        hops,
 
       
     });
