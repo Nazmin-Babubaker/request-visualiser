@@ -16,27 +16,71 @@ function isValidHostname(hostname) {
 }
 
 
-function detectServerType(headers) {
+function detectServerType(headers, org) {
   const server = headers["server"]?.toLowerCase() || "";
+  const organization = org?.toLowerCase() || "";
+
+  // ----- High confidence (Header-based) -----
 
   if (headers["cf-ray"]) {
-    return { type: "Edge Server (Cloudflare)", provider: "Cloudflare" };
+    return { type: "Edge Server", provider: "Cloudflare", confidence: "High" };
   }
 
   if (headers["x-amz-cf-id"]) {
-    return { type: "Edge Server (CloudFront)", provider: "AWS CloudFront" };
+    return { type: "Edge Server", provider: "AWS CloudFront", confidence: "High" };
   }
 
   if (headers["x-served-by"]) {
-    return { type: "Edge Server (Fastly)", provider: "Fastly" };
+    return { type: "Edge Server", provider: "Fastly", confidence: "High" };
   }
 
   if (headers["via"] || headers["x-cache"]) {
-    return { type: "Edge Server (CDN/Proxy)", provider: "Unknown CDN" };
+    return { type: "Edge Server", provider: "CDN/Proxy", confidence: "Medium" };
   }
 
-  return { type: "Origin Server", provider: server || "Unknown" };
+  // ----- Medium confidence (ASN/org-based) -----
+
+  if (organization.includes("cloudflare")) {
+    return { type: "Edge Server (Likely)", provider: "Cloudflare", confidence: "Medium" };
+  }
+
+  if (organization.includes("akamai")) {
+    return { type: "Edge Server (Likely)", provider: "Akamai", confidence: "Medium" };
+  }
+
+  if (organization.includes("fastly")) {
+    return { type: "Edge Server (Likely)", provider: "Fastly", confidence: "Medium" };
+  }
+
+  if (organization.includes("cloudfront")) {
+    return { type: "Edge Server (Likely)", provider: "CloudFront", confidence: "Medium" };
+  }
+
+if (organization.includes("google")) {
+  if (server.includes("gws") || server.includes("esf")) {
+    return {
+      type: "Edge Server",
+      provider: "Google Front End",
+      confidence: "High"
+    };
+  }
+
+  return {
+    type: "Origin Server (Google Cloud)",
+    provider: "Google Cloud",
+    confidence: "Medium"
+  };
 }
+
+
+
+  return {
+    type: "Origin Server",
+    provider: org || server || "Unknown",
+    confidence: "Low"
+  };
+}
+
 
 
 
@@ -52,6 +96,8 @@ function measureTimings(url) {
 
        const headers = res.headers;
       const statusCode = res.statusCode;
+      const httpVersion = res.httpVersion;
+
 
       res.on("data", () => {});
       res.on("end", () => {
@@ -59,7 +105,8 @@ function measureTimings(url) {
         resolve({
           timings,
           headers,
-          statusCode
+          statusCode,
+          httpVersion
         });
       });
     });
@@ -205,7 +252,7 @@ app.post("/test", async (req, res) => {
    const timings = result.timings;
    const headers = result.headers;
 
-   const serverInfo = detectServerType(headers);
+const serverInfo = detectServerType(headers, geo.org);
     
    const hops = buildHops(timings);
 
@@ -240,10 +287,12 @@ app.post("/test", async (req, res) => {
         },
         hops,
         server: {
-         type: serverInfo.type,
-         provider: serverInfo.provider,
-         rawServerHeader: headers["server"] || null
+          type: serverInfo.type,
+          provider: serverInfo.provider,
+          confidence: serverInfo.confidence,
+          rawServerHeader: headers["server"] || null
         },
+        httpVersion: result.httpVersion,
 
       
     });

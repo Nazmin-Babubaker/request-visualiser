@@ -6,7 +6,7 @@ POST http://localhost:5000/test
 Content-Type: application/json
 
 {
-  "url": "nzabbkr.vercel.app"
+  "url": "ktunotes.in"
 }
 ###
 
