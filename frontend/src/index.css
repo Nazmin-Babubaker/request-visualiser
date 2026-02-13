@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-space-950: #020617;
+  --color-space-900: #0f172a;
+  --color-space-cyan: #22d3ee;
+  
+  /* You can even add custom animations here later! */
+}
+
+body {
+  background-color: var(--color-space-950);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Let's add a subtle animated star background effect */
+.starfield {
+  background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
+  min-height: 100vh;
+}
