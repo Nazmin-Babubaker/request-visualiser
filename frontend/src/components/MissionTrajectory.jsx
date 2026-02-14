@@ -1,74 +1,86 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Satellite, ShieldCheck, Zap, Database } from 'lucide-react';
+import { Star, Moon, Sun, Cloud, Timer } from 'lucide-react';
 
-const icons = [Satellite, Zap, ShieldCheck, Database];
+const icons = [Star, Moon, Sun, Cloud];
 
 export default function MissionTrajectory({ hops }) {
   const [hoveredNode, setHoveredNode] = useState(null);
 
   return (
-    <div className="w-full py-16 px-4 mb-16 bg-slate-900/20 border-y border-white/5 relative overflow-visible rounded-xl">
+    <div className="w-full py-12 px-4 glass-card rounded-[40px] relative overflow-visible mt-8">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-[10px] font-mono text-space-cyan uppercase tracking-[0.4em] mb-16 text-center">
-          Signal Trajectory Visualization
-        </h2>
+        <p className="font-silkscreen text-[10px] font-black text-pop-purple uppercase tracking-[0.5em] mb-12 text-center">
+          Connection_Journey 
+        </p>
 
-        <div className="relative flex justify-between items-center">
-          {/* Background Connecting Line */}
-          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-space-cyan/10 -translate-y-1/2" />
+        <div className="relative flex justify-between items-center px-8">
+          {/* Background Track */}
+          <div className="absolute top-1/2 left-0 w-full h-1 bg-white/5 -translate-y-1/2 rounded-full" />
           
-          {/* Animated Progress Line */}
+          {/* Glowing Progress Line */}
           <motion.div 
-            initial={{ width: 0 }}
+            initial={{ width: 0 }} 
             animate={{ width: '100%' }}
-            transition={{ duration: 2, ease: "easeInOut" }}
-            className="absolute top-1/2 left-0 h-0.5 bg-gradient-to-r from-space-cyan to-fuchsia-500 -translate-y-1/2 shadow-[0_0_15px_#22d3ee]"
+            className="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-pop-cyan via-pop-purple to-pop-pink -translate-y-1/2 shadow-[0_0_15px_#ff71ce]"
           />
 
           {hops?.map((hop, index) => {
-            const Icon = icons[index] || Satellite;
+            const Icon = icons[index % icons.length];
+            const isHovered = hoveredNode === hop.id;
+            
             return (
-              <div key={hop.id} className="relative flex flex-col items-center">
-                {/* Node Station */}
+              <div key={hop.id} className="relative">
                 <motion.button
                   onMouseEnter={() => setHoveredNode(hop.id)}
                   onMouseLeave={() => setHoveredNode(null)}
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: index * 0.3 }}
-                  className={`relative z-10 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 border ${
-                    hoveredNode === hop.id 
-                    ? 'bg-space-cyan text-slate-950 scale-125 shadow-[0_0_20px_#22d3ee] border-white' 
-                    : 'bg-slate-950 border-space-cyan/50 text-space-cyan'
+                  className={`relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                    isHovered 
+                    ? 'bg-white text-pop-pink scale-125 shadow-[0_0_25px_#fff] ' 
+                    : 'bg-space-black border-2 border-pop-purple/50 text-pop-purple hover:border-pop-pink'
                   }`}
                 >
-                  <Icon size={20} />
+                  <Icon size={24} className={isHovered ? 'fill-current' : ''} />
                   
-                  {/* Tooltip Popup */}
                   <AnimatePresence>
-                    {hoveredNode === hop.id && (
+                    {isHovered && (
                       <motion.div
-                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                        animate={{ opacity: 1, y: -10, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                        className="absolute bottom-full mb-6 w-56 p-4 bg-slate-900 border border-space-cyan/50 rounded-lg shadow-2xl pointer-events-none z-50 text-left"
+                        initial={{ opacity: 0, y: 10, scale: 0.8 }} 
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                        className="absolute bottom-full mb-6 w-52 p-4 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-50 text-left border-b-8 border-pop-pink"
                       >
-                        <p className="text-space-cyan font-mono text-[10px] uppercase mb-1 tracking-wider">{hop.label}</p>
-                        <p className="text-slate-300 text-[11px] leading-relaxed font-sans">
+                        {/* Header with Title */}
+                        <p className="font-silkscreen text-pop-pink text-[9px] uppercase mb-1 italic tracking-tighter">
+                          {hop.label}
+                        </p>
+                        
+                        {/* Description */}
+                        <p className="text-space-black text-[11px] font-bold leading-tight mb-3">
                           {hop.description}
                         </p>
-                        <div className="mt-3 pt-2 border-t border-white/10 flex justify-between items-center">
-                          <span className="text-[9px] text-slate-500 font-mono uppercase">Node Latency</span>
-                          <span className="text-[10px] text-space-cyan font-mono font-bold">{hop.latency}ms</span>
+
+                        {/* NEW: Time/Latency Section */}
+                        <div className="flex items-center justify-between pt-2 border-t border-pop-pink/10">
+                          <div className="flex items-center gap-1">
+                            <Timer size={12} className="text-pop-purple" />
+                            <span className="font-silkscreen text-[8px] text-pop-purple uppercase">Travel_Time</span>
+                          </div>
+                          <span className="font-silkscreen text-[10px] text-pop-pink font-bold">
+                            {hop.latency}ms
+                          </span>
                         </div>
+
+                        {/* Decorative Pixel Corner */}
+                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45" />
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </motion.button>
-
-                <span className="mt-6 text-[9px] font-mono text-slate-500 uppercase tracking-widest absolute top-10 whitespace-nowrap">
-                  Step 0{hop.id}
+                
+                {/* Step Marker underneath */}
+                <span className={`absolute -bottom-8 left-1/2 -translate-x-1/2 font-silkscreen text-[8px] transition-colors duration-300 ${isHovered ? 'text-pop-cyan' : 'text-white/20'}`}>
+                  0{index + 1}
                 </span>
               </div>
             );

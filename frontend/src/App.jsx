@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Rocket, ShieldAlert, Globe, Loader2, Terminal } from 'lucide-react';
+import { Sparkles, ShieldAlert, Globe, Loader2, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PlanetStats from './components/PlanetStats';
 import StellarMap from './components/StellarMap';
@@ -19,14 +19,13 @@ export default function App() {
     setData(null);
 
     try {
-      const response = await fetch('http://localhost:3000/test', {
+      const response = await fetch('http://localhost:5001/test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url })
       });
-      if (!response.ok) throw new Error('Satellite Link Failed');
+      if (!response.ok) throw new Error('Link Severed, Bestie!');
       const result = await response.json();
-      console.log(result)
       setData(result);
     } catch (err) {
       setError(err.message);
@@ -38,57 +37,90 @@ export default function App() {
   return (
     <div className="starfield min-h-screen flex flex-col items-center justify-start pt-20 p-4">
       {/* Header */}
-      <motion.header initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-        <h1 className="text-5xl font-black text-space-cyan tracking-tighter italic">DATA ODYSSEY</h1>
-        <p className="text-xs font-mono text-cyan-500/60 mt-2 uppercase tracking-[0.3em]">Interstellar Network Probe v4.0</p>
+      <motion.header initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center mb-12">
+<h1 className="font-silkscreen text-6xl font-bold text-white tracking-widest drop-shadow-[4px_4px_0px_#ff71ce] hover:drop-shadow-[4px_4px_0px_#01cdfe] transition-all duration-300">          SPACE GLOSS
+        </h1>
+        <div className="flex items-center justify-center gap-2 mt-2">
+          <Sparkles size={14} className="text-pop-cyan animate-pulse" />
+          <p className="text-[10px] font-bold text-pop-cyan/80 uppercase tracking-[0.4em]">Stellar Link Analyzer v.GIRL</p>
+          <Sparkles size={14} className="text-pop-cyan animate-pulse" />
+        </div>
       </motion.header>
 
       {/* Input */}
-      <motion.form onSubmit={launchProbe} className="w-full max-w-xl relative group mb-8">
-        <div className="absolute -inset-1 bg-space-cyan/20 rounded-lg blur group-focus-within:bg-space-cyan/40 transition" />
-        <div className="relative flex bg-space-900 border border-space-cyan/30 rounded-lg overflow-hidden">
-          <div className="flex items-center justify-center px-4 border-r border-space-cyan/20">
-            <Globe className="w-5 h-5 text-space-cyan/50" />
-          </div>
-          <input 
-            type="text" value={url} onChange={(e) => setUrl(e.target.value)}
-            placeholder="ENTER DESTINATION URL"
-            className="flex-1 bg-transparent p-4 outline-none font-mono text-sm placeholder:text-slate-600"
-          />
-          <button disabled={loading} className="bg-space-cyan text-space-950 px-6 font-bold flex items-center gap-2 hover:bg-white transition-colors disabled:opacity-50 cursor-pointer">
-            {loading ? <Loader2 className="animate-spin w-5 h-5" /> : <Rocket className="w-5 h-5" />}
-            {loading ? 'LAUNCHING...' : 'LAUNCH'}
-          </button>
-        </div>
-      </motion.form>
+<motion.form 
+  onSubmit={launchProbe} 
+  className="w-full max-w-xl relative group mb-12"
+  initial={{ opacity: 0, scale: 0.95 }}
+  animate={{ opacity: 1, scale: 1 }}
+>
+  {/* The Glowing "Aura" */}
+  <div className="absolute -inset-1 bg-gradient-to-r from-pop-pink via-pop-cyan to-pop-purple rounded-sm blur-lg opacity-30 group-focus-within:opacity-100 transition duration-1000 group-focus-within:duration-200 animate-pulse" />
+
+  {/* Main Container */}
+  <div className="relative flex bg-space-black border-2 border-pop-pink/30 rounded-sm overflow-hidden backdrop-blur-md">
+    
+    {/* Animated Scan Line Effect */}
+    <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%]" />
+
+    {/* Icon Section */}
+    <div className="flex items-center justify-center px-4 bg-pop-pink/10 border-r-2 border-pop-pink/20">
+      <Globe className="w-5 h-5 text-pop-pink drop-shadow-[0_0_8px_#ff71ce]" />
+    </div>
+
+    {/* Input Field */}
+    <input 
+      type="text" 
+      value={url} 
+      onChange={(e) => setUrl(e.target.value)}
+      placeholder="COORD_INPUT_REQUIRED..."
+      className="flex-1 bg-transparent p-4 outline-none font-silkscreen text-[11px] text-pop-cyan placeholder:text-pop-cyan/30 z-20"
+    />
+
+    {/* Gamer Button */}
+    <button 
+      disabled={loading} 
+      className="relative group/btn bg-pop-pink text-white px-8 font-silkscreen text-[12px] flex items-center gap-2 hover:bg-white hover:text-pop-pink transition-all duration-300 disabled:opacity-50 cursor-pointer overflow-hidden border-l-2 border-pop-pink/20"
+    >
+      {/* Button Glitch Hover Effect */}
+      <div className="absolute inset-0 bg-pop-cyan translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+      
+      <span className="relative z-30 flex items-center gap-2 group-hover/btn:invert">
+        {loading ? (
+          <Loader2 className="animate-spin w-4 h-4" />
+        ) : (
+          <Heart className="w-4 h-4 fill-current" />
+        )}
+        {loading ? 'WAIT...' : 'GO!'}
+      </span>
+    </button>
+  </div>
+
+  {/* Bottom Status Bar Decorations */}
+  <div className="flex justify-between mt-2 px-1">
+    <div className="h-1 w-12 bg-pop-cyan shadow-[0_0_8px_#01cdfe]" />
+    <div className="h-1 w-32 bg-pop-purple/30" />
+    <div className="h-1 w-1 bg-pop-pink animate-ping" />
+  </div>
+</motion.form>
 
       {/* Results */}
       <AnimatePresence>
         {data && (
           <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="mt-4 w-full max-w-5xl">
-            
-            {/* 1. Radar Map */}
             <div className="mb-12">
                <StellarMap location={data?.location} stats={data?.journey} />
             </div>
 
-            {/* 2. Horizontal Flowchart */}
             <MissionTrajectory hops={data?.hops} />
 
-            {/* 3. Detailed Logs & Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-              
-              {/* Refined Telemetry Logs (Black Box Style) */}
-              <div className="md:col-span-2 bg-slate-900/40 border border-white/5 rounded-2xl p-8 backdrop-blur-md">
-                <div className="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
-                  <h2 className="text-xs font-mono text-slate-400 uppercase tracking-[0.2em] flex items-center gap-3">
-                    <Terminal size={14} className="text-space-cyan" />
-                    Live Flight Telemetry
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+              <div className="md:col-span-2 glass-card rounded-3xl p-8 border-t border-white/20">
+                <div className="flex justify-between items-center mb-8 pb-4 border-b border-white/5">
+                  <h2 className="text-xs font-bold text-pop-pink uppercase tracking-widest flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-pop-pink shadow-[0_0_8px_#ff71ce]" />
+                    Live Transmission Stream
                   </h2>
-                  <div className="flex gap-2">
-                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                    <div className="w-2 h-2 rounded-full bg-slate-700" />
-                  </div>
                 </div>
 
                 <div className="space-y-4">
@@ -97,39 +129,23 @@ export default function App() {
                       key={hop.id}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.15 }}
-                      className="group flex font-mono text-[11px] py-3 border-b border-white/5 hover:bg-space-cyan/5 transition-colors px-2 rounded-sm"
+                      transition={{ delay: index * 0.1 }}
+                      className="group flex items-center text-[12px] py-3 border-b border-white/5 hover:bg-white/5 transition-all px-4 rounded-xl"
                     >
-                      <span className="text-space-cyan w-16 shrink-0">[{hop.latency}ms]</span>
-                      <span className="text-slate-200 uppercase w-40 shrink-0 font-bold tracking-tight">{hop.label}</span>
-                      <span className="text-slate-500 flex-1 truncate italic opacity-70 group-hover:opacity-100 transition-opacity">
-                        {`>> ${hop.description}`}
+                      <span className="text-pop-cyan font-bold w-16">{hop.latency}ms</span>
+                      <span className="text-white font-bold w-40 truncate uppercase">{hop.label}</span>
+                      <span className="text-white/40 flex-1 truncate italic group-hover:text-pop-purple transition-colors">
+                        {hop.description}
                       </span>
-                      <span className="text-space-cyan ml-2 opacity-40">OK_SIGNAL</span>
                     </motion.div>
                   ))}
                 </div>
-
-                <div className="mt-8 pt-4 border-t border-white/5 flex justify-between items-center text-[10px] font-mono text-slate-600 uppercase">
-                  <span>Packet Loss: 0%</span>
-                  <span>Encryption: TLS_AES_256_GCM</span>
-                  <span>Signal: Stable</span>
-                </div>
               </div>
-
-              {/* Technical Stats */}
               <PlanetStats data={data} />
             </div>
-
           </motion.div>
         )}
       </AnimatePresence>
-
-      {!data && !loading && (
-        <p className="mt-12 text-slate-500 font-mono text-[10px] uppercase tracking-widest animate-pulse">
-          Standing by for coordinates...
-        </p>
-      )}
     </div>
   );
 }
