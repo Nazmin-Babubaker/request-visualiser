@@ -157,6 +157,9 @@ The system consists of the following components:
 ![img2](project_pics/img2.png)
 ![img3](project_pics/img3.png)
 
+## Demo Video
+
+[Watch the Demo Video](https://github.com/Nazmin-Babubaker/request-visualiser/raw/main/project_pics/video.webm)
 
 ---
 
