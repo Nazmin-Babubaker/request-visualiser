@@ -153,9 +153,10 @@ The system consists of the following components:
 
 ### Screenshots
 
-- **Homepage:** User interface for entering a URL
-- **Cosmic Visualization:** Network hops displayed as glowing stars
-- **Details Panel:** Latency and IP information
+![img1](project_pics/img1.png)
+![img2](project_pics/img2.png)
+![img3](project_pics/img3.png)
+
 
 ---
 
