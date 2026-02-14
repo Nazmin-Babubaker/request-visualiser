@@ -38,11 +38,11 @@ export default function App() {
     <div className="starfield min-h-screen flex flex-col items-center justify-start pt-20 p-4">
       {/* Header */}
       <motion.header initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center mb-12">
-<h1 className="font-silkscreen text-6xl font-bold text-white tracking-widest drop-shadow-[4px_4px_0px_#ff71ce] hover:drop-shadow-[4px_4px_0px_#01cdfe] transition-all duration-300">          SPACE GLOSS
+<h1 className="font-silkscreen text-6xl font-bold text-white tracking-widest drop-shadow-[4px_4px_0px_#ff71ce] hover:drop-shadow-[4px_4px_0px_#01cdfe] transition-all duration-300">RequestScope
         </h1>
         <div className="flex items-center justify-center gap-2 mt-2">
           <Sparkles size={14} className="text-pop-cyan animate-pulse" />
-          <p className="text-[10px] font-bold text-pop-cyan/80 uppercase tracking-[0.4em]">Stellar Link Analyzer v.GIRL</p>
+          <p className="text-[10px] font-bold text-pop-cyan/80 uppercase tracking-[0.4em]">Explore the universe behind your URL.</p>
           <Sparkles size={14} className="text-pop-cyan animate-pulse" />
         </div>
       </motion.header>
