@@ -4,6 +4,9 @@ import dns from "dns";
 import { performance } from "perf_hooks";
 import https from "https";
 import http from "http";
+import dotenv from "dotenv"
+
+dotenv.config()
 
 
 function isValidHostname(hostname) {
@@ -204,6 +207,7 @@ app.get("/", (req, res) => {
 
 app.post("/test", async (req, res) => {
   let { url } = req.body;
+  console.log(url)
 
   if (!url) {
     return res.status(400).json({ error: "URL is required" });
@@ -227,9 +231,12 @@ app.post("/test", async (req, res) => {
    try {
       const lookup = await dns.promises.lookup(parsed.hostname, { family: 4 });
       ipAddress = lookup.address;
+      console.log(ipAddress)
    } catch (err) {
      if (err.code === "ENOTFOUND") {
+      console.log(err)
       return res.status(404).json({ error: "Domain does not exist" });
+      
      }
     throw err;
      }
@@ -326,6 +333,8 @@ const serverInfo = detectServerType(headers, geo.org);
 }
 });
 
-app.listen(5002, () => {
-  console.log("Server running on port 5000 ");
+
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on port ${process.env.PORT}` );
 });

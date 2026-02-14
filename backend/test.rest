@@ -2,7 +2,7 @@
 GET http://localhost:5000/
 
 ### Test POST JSON
-POST http://localhost:5002/test
+POST http://localhost:5006/test
 Content-Type: application/json
 
 {
