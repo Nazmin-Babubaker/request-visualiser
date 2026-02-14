@@ -11,7 +11,7 @@ An interactive web application that visualizes the journey of web requests acros
 
 ## 🔗 Links
 
-- **Hosted Project:** 
+- **Hosted Project:** https://requestscope.vercel.app
 - **Repository:** https://github.com/Nazmin-Babubaker/request-visualiser.git
 
 ---
