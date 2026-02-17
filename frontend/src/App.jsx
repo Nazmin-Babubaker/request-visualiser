@@ -12,34 +12,38 @@ export default function App() {
   const [error, setError] = useState(null);
 
   const launchProbe = async (e) => {
-    e.preventDefault();
-    if (!url) return;
-    setLoading(true);
-    setError(null);
-    setData(null);
+  e.preventDefault();
+  if (!url) return;
+  setLoading(true);
+  setError(null);
+  setData(null);
 
-    try {
-      // http://localhost:5006/test
-      const response = await fetch('http://localhost:5006/test', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url })
-      });
-      if (!response.ok) throw new Error('Link Severed, Bestie!');
-      const result = await response.json();
-      setData(result);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+  try {
+    const response = await fetch('https://request-visualiser.onrender.com/test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || result.message || 'Link Failed');
     }
-  };
+
+    setData(result);
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="starfield min-h-screen flex flex-col items-center justify-start pt-20 p-4">
       {/* Header */}
       <motion.header initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center mb-12">
-<h1 className="font-silkscreen text-6xl font-bold text-white tracking-widest drop-shadow-[4px_4px_0px_#ff71ce] hover:drop-shadow-[4px_4px_0px_#01cdfe] transition-all duration-300">RequestScope
+<h1 className="font-silkscreen text-3xl sm:text-4xl md:text-6xl font-bold text-white tracking-widest drop-shadow-[3px_3px_0px_#ff71ce] md:drop-shadow-[4px_4px_0px_#ff71ce] hover:drop-shadow-[4px_4px_0px_#01cdfe] transition-all duration-300 break-words">RequestScope
         </h1>
         <div className="flex items-center justify-center gap-2 mt-2">
           <Sparkles size={14} className="text-pop-cyan animate-pulse" />
@@ -56,7 +60,7 @@ export default function App() {
   animate={{ opacity: 1, scale: 1 }}
 >
   {/* The Glowing "Aura" */}
-  <div className="absolute -inset-1 bg-gradient-to-r from-pop-pink via-pop-cyan to-pop-purple rounded-sm blur-lg opacity-30 group-focus-within:opacity-100 transition duration-1000 group-focus-within:duration-200 animate-pulse" />
+  <div className="absolute -inset-1 bg-linear-to-r from-pop-pink via-pop-cyan to-pop-purple rounded-sm blur-lg opacity-30 group-focus-within:opacity-100 transition duration-1000 group-focus-within:duration-200 animate-pulse" />
 
   {/* Main Container */}
   <div className="relative flex bg-space-black border-2 border-pop-pink/30 rounded-sm overflow-hidden backdrop-blur-md">
@@ -74,7 +78,7 @@ export default function App() {
       type="text" 
       value={url} 
       onChange={(e) => setUrl(e.target.value)}
-      placeholder="COORD_INPUT_REQUIRED..."
+      placeholder="Enter Domain(example.com)"
       className="flex-1 bg-transparent p-4 outline-none font-silkscreen text-[11px] text-pop-cyan placeholder:text-pop-cyan/30 z-20"
     />
 
@@ -104,7 +108,46 @@ export default function App() {
     <div className="h-1 w-1 bg-pop-pink animate-ping" />
   </div>
 </motion.form>
+{/* Error Alert */}
+<AnimatePresence>
+  {error && (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9, y: -10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9, y: -10 }}
+      className="w-full max-w-xl mb-8 relative"
+    >
+      {/* Red Glow Background */}
+      <div className="absolute -inset-1 bg-red-500/20 rounded-xl blur-md animate-pulse" />
+      
+      <div className="relative glass-card border-red-500/50 bg-red-500/5 p-4 rounded-xl flex items-center gap-4 overflow-hidden">
+        {/* Decorative Side Strip */}
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-red-500 shadow-[0_0_10px_#ef4444]" />
+        
+        <div className="bg-red-500/20 p-2 rounded-lg">
+          <ShieldAlert className="text-red-500 w-6 h-6 animate-bounce" />
+        </div>
+        
+        <div className="flex-1">
+          <h3 className="font-silkscreen text-[10px] text-red-400 tracking-tighter uppercase mb-1">
+            System_Alert: Error_Detected
+          </h3>
+          <p className="text-white font-bold text-xs italic tracking-wide">
+            {error}
+          </p>
+        </div>
 
+        {/* Close button (optional) to reset error state */}
+        <button 
+          onClick={() => setError(null)}
+          className="text-red-500/50 hover:text-red-500 font-silkscreen text-xs transition-colors p-2"
+        >
+          [X]
+        </button>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
       {/* Results */}
       <AnimatePresence>
         {data && (
