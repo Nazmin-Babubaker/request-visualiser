@@ -19,7 +19,8 @@ export default function App() {
     setData(null);
 
     try {
-      const response = await fetch('https://request-visualiser.onrender.com/test', {
+      // http://localhost:5006/test
+      const response = await fetch('http://localhost:5006/test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url })
