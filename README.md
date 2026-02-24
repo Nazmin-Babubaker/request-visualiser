@@ -64,13 +64,12 @@ Instead of plain text traceroute output, users experience the internet as a gala
 - **Libraries:** 
   - Axios (API calls)
   - GeoIP API (IP geolocation)(ipinfo)
-  - Three.js (3D visualization, optional)
 
 #### Development Tools
 - VS Code
 - Git & GitHub
 - Render (backend hosting)
-
+- Vercel (frontend hosting)
 ---
 
 ## ✨ Features
