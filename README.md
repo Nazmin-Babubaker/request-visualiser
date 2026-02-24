@@ -18,9 +18,9 @@ An interactive web application that visualizes the journey of web requests acros
 
 ## 📋 Project Description
 
-RequestScope is an interactive web dashboard that visualizes what actually happens when a user enters a website URL. It transforms invisible networking processes like DNS resolution, IP lookup, and latency measurement into an engaging, astronomy-inspired visual experience.
+RequestScope is an interactive web dashboard that visualizes what actually happens when a user enters a website URL. It transforms invisible networking processes like DNS resolution, IP lookup, and latency measurement into an engaging, astronomy-inspired visual experience(The resulting metrics will be measured relative to the probe server).
 
-Instead of raw terminal logs, users see their web request travel across the internet as a constellation of connected nodes.
+
 ---
 
 ## ❓ The Problem Statement
